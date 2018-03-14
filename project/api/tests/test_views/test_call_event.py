@@ -23,3 +23,7 @@ class CallEventViewTestCase(AuthUserTestMixin, APITestCase):
         self.client.logout()
         resp = self.client.post(self.url)
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_ok(self):
+        resp = self.client.post(self.url)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)

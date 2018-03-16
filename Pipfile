@@ -11,12 +11,14 @@ django = "*"
 python-decouple = "*"
 dj-database-url = "*"
 djangorestframework = "*"
+dateutils = "*"
 
 
 [dev-packages]
 
 ipdb = "*"
 mock = "*"
+django-test-without-migrations = "*"
 
 
 [requires]

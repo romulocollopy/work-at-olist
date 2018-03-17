@@ -19,6 +19,7 @@ dateutils = "*"
 ipdb = "*"
 mock = "*"
 django-test-without-migrations = "*"
+model-mommy = "*"
 
 
 [requires]

@@ -2,6 +2,8 @@ from django.db import models
 
 
 class Call(models.Model):
+    pricing_service = None
+
     source = models.CharField(max_length=11)
     destination = models.CharField(max_length=11)
     start_timestamp = models.DateTimeField()
@@ -11,7 +13,7 @@ class Call(models.Model):
     @classmethod
     def handle_start(cls, event):
         cls.objects.update_or_create(
-            id=event.call_id, default=dict(
+            id=event.call_id, defaults=dict(
                 start_timestamp=event.timestamp,
                 source=event.source,
                 destination=event.destination,
@@ -20,8 +22,7 @@ class Call(models.Model):
 
     @classmethod
     def handle_end(cls, event):
-        cls.objects.update_or_create(
-            id=event.call_id, default=dict(
-                duration=event.timestamp - models.F('start_timestamp'),
-            )
-        )
+        call = cls.objects.get(id=event.call_id)
+        call.duration = event.timestamp - call.start_timestamp
+        call.price = cls.pricing_service.get_price(call)
+        call.save()

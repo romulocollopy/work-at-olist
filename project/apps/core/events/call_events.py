@@ -24,11 +24,10 @@ class CallStartEvent(BaseEvent):
         self.destination = kwargs['destination']
 
     def process(self):
-        pass
+        self.model.handle_start(self)
 
 
 class CallEndEvent(BaseEvent):
 
     def process(self):
-        pass
-
+        self.model.handle_end(self)

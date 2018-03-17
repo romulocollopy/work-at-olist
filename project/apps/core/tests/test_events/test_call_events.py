@@ -25,13 +25,7 @@ class CallStartEventTestCase(TestCase):
         event = CallStartEvent(**self.call_start_data)
         event.model = mock.Mock()
         event.process()
-        event.model.objects.update_or_create.assert_called_once_with(
-            id=event.call_id, default=dict(
-                start_timestamp=event.timestamp,
-                source=event.source,
-                destination=event.destination,
-            )
-        )
+        event.model.handle_start.assert_called_once_with(event)
 
 
 class CallEndEventTestCase(TestCase):
@@ -55,8 +49,4 @@ class CallEndEventTestCase(TestCase):
         event = CallEndEvent(**self.call_end_data)
         event.model = mock.Mock()
         event.process()
-        event.model.objects.update_or_create.assert_called_once_with(
-            id=event.call_id, default=dict(
-                end_timestamp=event.timestamp,
-            )
-        )
+        event.model.handle_end.assert_called_once_with(event)

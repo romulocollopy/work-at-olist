@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9071a4f54736e66a2d18cc15736a16d172f0980d0a44e6b3cf9a740594216bff"
+            "sha256": "136335d4afc05142a618230817e901fae3a71a7a0053cb1fcc6fb8efc2daa270"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -49,6 +49,13 @@
                 "sha256:9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"
             ],
             "version": "==3.7.7"
+        },
+        "freezegun": {
+            "hashes": [
+                "sha256:703caac155dcaad61f78de4cb0666dca778d854dfb90b3699930adee0559a622",
+                "sha256:94c59d69bb99c9ec3ca5a3adb41930d3ea09d2a9756c23a02d89fa75646e78dd"
+            ],
+            "version": "==0.3.10"
         },
         "python-dateutil": {
             "hashes": [
@@ -98,6 +105,13 @@
                 "sha256:28fbe94d23f314f524acea7ff23ef6f72ddb232492d6d0b39c25a97fc20be0fa"
             ],
             "version": "==0.6"
+        },
+        "freezegun": {
+            "hashes": [
+                "sha256:703caac155dcaad61f78de4cb0666dca778d854dfb90b3699930adee0559a622",
+                "sha256:94c59d69bb99c9ec3ca5a3adb41930d3ea09d2a9756c23a02d89fa75646e78dd"
+            ],
+            "version": "==0.3.10"
         },
         "ipdb": {
             "hashes": [
@@ -190,6 +204,13 @@
                 "sha256:dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"
             ],
             "version": "==2.2.0"
+        },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:07009062406cffd554a9b4135cd2ff167c9bf6b7aac61fe946c93e69fad1bbd8",
+                "sha256:8f95bb7e6edbb2456a51a1fb58c8dca942024b4f5844cae62c90aa88afe6e300"
+            ],
+            "version": "==2.7.0"
         },
         "pytz": {
             "hashes": [

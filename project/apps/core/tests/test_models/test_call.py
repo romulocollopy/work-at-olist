@@ -1,9 +1,13 @@
-import datetime, pytz
+import datetime
+import pytz
 import mock
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from model_mommy import mommy
+from freezegun import freeze_time
 from apps.core.models import Call as CallModel
+from apps.core.models.call import _get_period
 
 
 class CallModelTestCase(TestCase):
@@ -72,6 +76,25 @@ class CallModelTestCase(TestCase):
         self.assertEqual(call.duration, None)
         self.assertEqual(call.price, None)
 
+    def test_validate_start_gt_end(self):
+        start_timestamp = self.call_start_event.timestamp
+        end_timestamp = start_timestamp - datetime.timedelta(seconds=300)
+        call = CallModel(
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+        )
+        with self.assertRaises(ValidationError):
+            call.clean()
+
+    def test_validate_negative_duration(self):
+        start_timestamp = self.call_start_event.timestamp
+        end_timestamp = start_timestamp - datetime.timedelta(seconds=300)
+        call = CallModel(
+            duration=end_timestamp - start_timestamp,
+        )
+        with self.assertRaises(ValidationError):
+            call.clean()
+
     def _load_start_event(self, start):
         call_start_event = mock.Mock()
         call_start_event.call_id = 722
@@ -85,3 +108,66 @@ class CallModelTestCase(TestCase):
         call_end_event.call_id = 722
         call_end_event.timestamp = end
         self.call_end_event = call_end_event
+
+
+class CallManagerTestCase(TestCase):
+
+    def setUp(self):
+        mommy.make(CallModel, source='AAXXXXXXXXX', _quantity=8,
+                   end_timestamp=timezone.datetime(2018, 2, 5))
+        mommy.make(CallModel, source='AAXXXXXXXXX', _quantity=6,
+                   end_timestamp=timezone.datetime(2018, 1, 6))
+        mommy.make(CallModel, source='BBXXXXXXXXX', _quantity=3,
+                   end_timestamp=timezone.datetime(2018, 2, 5))
+
+    def test_month_bill_requires_source(self):
+        with self.assertRaises(TypeError):
+            CallModel.objects.month_bill()
+
+    def test_month_bill_gets_calls_from_source(self):
+        bill = CallModel.objects.month_bill('AAXXXXXXXXX')
+        list(map(lambda b: self.assertEqual('AAXXXXXXXXX', b.source), bill))
+
+    def test_month_bill_gets_calls_from_month(self):
+        closed_month = timezone.datetime(2018, 2, 4)
+        bill = CallModel.objects.month_bill(
+            'AAXXXXXXXXX',
+            month=closed_month.month,
+            year=closed_month.year,
+        )
+        list(map(
+            lambda b: self.assertEqual(
+                (closed_month.year, closed_month.month),
+                (b.end_timestamp.year, b.end_timestamp.month)
+            ),
+            bill)
+        )
+
+    def test_get_period_with_args(self):
+        period = _get_period('123', '321')
+        self.assertEqual(period, (123, 321))
+
+    def test_get_period_with_month_eq_1(self):
+        year = timezone.now().year
+        period = _get_period('1', None)
+        self.assertEqual(period, (1, year))
+
+    def test_get_period_with_month_gt_1(self):
+        year = timezone.now().year
+        period = _get_period('2', None)
+        self.assertEqual(period, (2, year))
+
+    @freeze_time('2018-03-01')
+    def test_get_period_wo_args(self):
+        period = _get_period(None, None)
+        self.assertEqual(period, (2, 2018))
+
+    @freeze_time('2018-01-01')
+    def test_get_period_wo_args_in_january(self):
+        period = _get_period(None, None)
+        self.assertEqual(period, (12, 2017))
+
+    @freeze_time('2018-01-01')
+    def test_get_period_with_year_keeps_month(self):
+        period = _get_period(None, 2013)
+        self.assertEqual(period, (1, 2013))

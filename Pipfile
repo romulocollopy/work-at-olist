@@ -12,6 +12,8 @@ python-decouple = "*"
 dj-database-url = "*"
 djangorestframework = "*"
 dateutils = "*"
+python-dateutil = "*"
+freezegun = "*"
 
 
 [dev-packages]
@@ -20,6 +22,7 @@ ipdb = "*"
 mock = "*"
 django-test-without-migrations = "*"
 model-mommy = "*"
+freezegun = "*"
 
 
 [requires]

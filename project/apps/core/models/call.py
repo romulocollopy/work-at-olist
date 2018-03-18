@@ -1,9 +1,35 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from apps.core.services import PricingService
+
+
+def _get_period(month, year):
+    now = timezone.now()
+    if month:
+        year = year or now.year
+    elif year:
+        month = month or now.month
+    else:
+        month = 12 if now.month == 1 else now.month - 1
+        year = year or (now.year - 1 if now.month == 1 else now.year)
+    return int(month), int(year)
+
+
+class CallQuerySet(models.QuerySet):
+
+    def month_bill(self, source, month=None, year=None):
+        month, year = _get_period(month, year)
+        qs = self.filter(source=source) \
+                 .filter(end_timestamp__month=month) \
+                 .filter(end_timestamp__year=year)
+        return qs
 
 
 class Call(models.Model):
     pricing_service = PricingService()
+    objects = CallQuerySet.as_manager()
 
     source = models.CharField(max_length=11, null=True)
     destination = models.CharField(max_length=11, null=True)
@@ -25,6 +51,7 @@ class Call(models.Model):
             return
         call.duration = call.end_timestamp - event.timestamp
         call.price = cls.pricing_service.get_price(call)
+        call.clean()
         call.save()
 
     @classmethod
@@ -36,4 +63,21 @@ class Call(models.Model):
             return
         call.duration = event.timestamp - call.start_timestamp
         call.price = cls.pricing_service.get_price(call)
+        call.clean()
         call.save()
+
+    def clean(self):
+        super().clean()
+
+        if self.duration and self.duration.total_seconds() < 0:
+            raise ValidationError(
+                {'duration': _("Call's duration cannot be negative.")}
+            )
+
+        if not (self.start_timestamp and self.end_timestamp):
+            return
+
+        if self.end_timestamp < self.start_timestamp:
+            raise ValidationError(
+                {'duration': _("Start time cannot be after end time")}
+            )

@@ -93,3 +93,8 @@ class PricingServiceTestCase(TestCase):
     def test_get_entire_days_value(self):
         value = self.service._get_entire_days_value(self.call)
         self.assertEqual(value, Decimal('172.80'))
+
+    def test_get_reduced_minutes(self):
+        """ this first implementation will always return 0 """
+        minutes = self.service._get_reduced_minutes()
+        self.assertEqual(minutes, 0)

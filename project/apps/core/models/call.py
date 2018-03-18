@@ -23,7 +23,8 @@ class CallQuerySet(models.QuerySet):
         month, year = _get_period(month, year)
         qs = self.filter(source=source) \
                  .filter(end_timestamp__month=month) \
-                 .filter(end_timestamp__year=year)
+                 .filter(end_timestamp__year=year) \
+                 .filter(start_timestamp__isnull=False)
         return qs
 
 

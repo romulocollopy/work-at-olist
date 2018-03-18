@@ -113,12 +113,22 @@ class CallModelTestCase(TestCase):
 class CallManagerTestCase(TestCase):
 
     def setUp(self):
-        mommy.make(CallModel, source='AAXXXXXXXXX', _quantity=8,
-                   end_timestamp=timezone.datetime(2018, 2, 5))
-        mommy.make(CallModel, source='AAXXXXXXXXX', _quantity=6,
-                   end_timestamp=timezone.datetime(2018, 1, 6))
-        mommy.make(CallModel, source='BBXXXXXXXXX', _quantity=3,
-                   end_timestamp=timezone.datetime(2018, 2, 5))
+        mommy.make(
+            CallModel, source='AAXXXXXXXXX', _quantity=8,
+            start_timestamp='2018-01-01',
+            end_timestamp=timezone.datetime(2018, 2, 5))
+
+        mommy.make(
+            CallModel, source='AAXXXXXXXXX', _quantity=6,
+            start_timestamp='2018-01-01',
+            end_timestamp=timezone.datetime(2018, 1, 6)
+        )
+
+        mommy.make(
+            CallModel, source='BBXXXXXXXXX', _quantity=3,
+            start_timestamp='2018-01-01',
+            end_timestamp=timezone.datetime(2018, 2, 5)
+        )
 
     def test_month_bill_requires_source(self):
         with self.assertRaises(TypeError):
@@ -131,7 +141,7 @@ class CallManagerTestCase(TestCase):
     def test_month_bill_gets_calls_from_month(self):
         closed_month = timezone.datetime(2018, 2, 4)
         bill = CallModel.objects.month_bill(
-            'AAXXXXXXXXX',
+            'BBXXXXXXXXX',
             month=closed_month.month,
             year=closed_month.year,
         )
@@ -142,6 +152,7 @@ class CallManagerTestCase(TestCase):
             ),
             bill)
         )
+        self.assertEqual(bill.count(), 3)
 
     def test_get_period_with_args(self):
         period = _get_period('123', '321')

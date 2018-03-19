@@ -14,6 +14,7 @@ djangorestframework = "*"
 dateutils = "*"
 python-dateutil = "*"
 freezegun = "*"
+gunicorn = "*"
 
 
 [dev-packages]

@@ -8,7 +8,7 @@ from .base import BASE_DIR
 
 
 DEFAULT_DATABASE_URL = decouple.config(
-    'DATABASE', default=str(
+    'DATABASE_URL', default=str(
         'sqlite:///{}/phonebilling.sqlite'.format(BASE_DIR.parent)
     )
 )

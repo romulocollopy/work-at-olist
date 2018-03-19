@@ -7,7 +7,6 @@ from django.utils import timezone
 from model_mommy import mommy
 from freezegun import freeze_time
 from apps.core.models import Call as CallModel
-from apps.core.models.call import _get_period
 
 
 class CallModelTestCase(TestCase):
@@ -153,32 +152,3 @@ class CallManagerTestCase(TestCase):
             bill)
         )
         self.assertEqual(bill.count(), 3)
-
-    def test_get_period_with_args(self):
-        period = _get_period('123', '321')
-        self.assertEqual(period, (123, 321))
-
-    def test_get_period_with_month_eq_1(self):
-        year = timezone.now().year
-        period = _get_period('1', None)
-        self.assertEqual(period, (1, year))
-
-    def test_get_period_with_month_gt_1(self):
-        year = timezone.now().year
-        period = _get_period('2', None)
-        self.assertEqual(period, (2, year))
-
-    @freeze_time('2018-03-01')
-    def test_get_period_wo_args(self):
-        period = _get_period(None, None)
-        self.assertEqual(period, (2, 2018))
-
-    @freeze_time('2018-01-01')
-    def test_get_period_wo_args_in_january(self):
-        period = _get_period(None, None)
-        self.assertEqual(period, (12, 2017))
-
-    @freeze_time('2018-01-01')
-    def test_get_period_with_year_keeps_month(self):
-        period = _get_period(None, 2013)
-        self.assertEqual(period, (1, 2013))

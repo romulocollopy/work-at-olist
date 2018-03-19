@@ -5,4 +5,5 @@ from . import views as api_views
 urlpatterns = [
     path('token/', rf_views.obtain_auth_token),
     path('call-event/', api_views.CallEventView.as_view(), name='call-event'),
+    path('call-bill/', api_views.CallBillView.as_view(), name='call-bill'),
 ]

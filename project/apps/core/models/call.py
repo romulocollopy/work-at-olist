@@ -1,26 +1,15 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
 from apps.core.services import PricingService
 
-
-def _get_period(month, year):
-    now = timezone.now()
-    if month:
-        year = year or now.year
-    elif year:
-        month = month or now.month
-    else:
-        month = 12 if now.month == 1 else now.month - 1
-        year = year or (now.year - 1 if now.month == 1 else now.year)
-    return int(month), int(year)
+phone_validator = RegexValidator(regex=r'\d{2}\d{8,9}')
 
 
 class CallQuerySet(models.QuerySet):
 
     def month_bill(self, source, month=None, year=None):
-        month, year = _get_period(month, year)
         qs = self.filter(source=source) \
                  .filter(end_timestamp__month=month) \
                  .filter(end_timestamp__year=year) \
@@ -32,8 +21,14 @@ class Call(models.Model):
     pricing_service = PricingService()
     objects = CallQuerySet.as_manager()
 
-    source = models.CharField(max_length=11, null=True)
-    destination = models.CharField(max_length=11, null=True)
+    source = models.CharField(
+        max_length=11, null=True,
+        validators=[phone_validator, ]
+    )
+    destination = models.CharField(
+        max_length=11, null=True,
+        validators=[phone_validator, ]
+    )
     start_timestamp = models.DateTimeField(null=True)
     end_timestamp = models.DateTimeField(null=True)
     duration = models.DurationField(null=True)

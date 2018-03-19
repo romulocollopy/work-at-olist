@@ -47,3 +47,19 @@ class CallEventSerializerTestCase(TestCase):
         }
         serializer = CallEventSerializer(data=start_data)
         self.assertFalse(serializer.is_valid())
+
+    def test_telephones_invalid_number(self):
+        data = {k: v for k, v in self.call_start_data.items()}
+        data['source'], data['destination'] = '123456789', '88888'
+        serializer = CallEventSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('source', serializer.errors)
+        self.assertIn('destination', serializer.errors)
+
+    def test_telephones_invalid_type(self):
+        data = {k: v for k, v in self.call_start_data.items()}
+        data['source'], data['destination'] = 'AA34567890', 'XXAAABBBCCC'
+        serializer = CallEventSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('source', serializer.errors)
+        self.assertIn('destination', serializer.errors)

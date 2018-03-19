@@ -96,5 +96,5 @@ class PricingServiceTestCase(TestCase):
 
     def test_get_reduced_minutes(self):
         """ this first implementation will always return 0 """
-        minutes = self.service._get_reduced_minutes()
+        minutes = self.service._get_reduced_minutes(self.call)
         self.assertEqual(minutes, 0)

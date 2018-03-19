@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from dateutil.parser import parse
 from apps.core.models import Call
 
 
@@ -8,7 +8,7 @@ class BaseEvent(ABC):
 
     def __init__(self, **kwargs):
         self.id = kwargs['id']
-        self.timestamp = kwargs['timestamp']
+        self.timestamp = parse(kwargs['timestamp'])
         self.call_id = kwargs['call_id']
 
     @abstractmethod

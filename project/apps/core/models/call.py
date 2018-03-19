@@ -53,8 +53,8 @@ class Call(models.Model):
     @classmethod
     def handle_end(cls, event):
         call, created = cls.objects.get_or_create(id=event.call_id)
+        call.end_timestamp = event.timestamp
         if created or call.start_timestamp is None:
-            call.end_timestamp = event.timestamp
             call.save()
             return
         call.duration = event.timestamp - call.start_timestamp

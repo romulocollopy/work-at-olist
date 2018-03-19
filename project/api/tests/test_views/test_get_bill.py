@@ -24,6 +24,7 @@ class BillViewTestCase(AuthUserTestMixin, APITestCase):
         self.use_case_patcher.start()
         self.get_use_case()().execute.return_value = dict(foo='bar')
         self.data = dict(spam='eggs')
+        self.get_serializer().return_value.data = self.data
         self.auth_user()
 
     def tearDown(self):
@@ -48,6 +49,5 @@ class BillViewTestCase(AuthUserTestMixin, APITestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_get_use_case_called(self):
-        self.get_serializer()().data = self.data
         self.client.get(self.url, self.data)
-        self.get_use_case()().execute.assert_called_once_with(self.data)
+        self.get_use_case()().execute.assert_called_once_with(**self.data)

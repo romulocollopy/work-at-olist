@@ -73,7 +73,7 @@ class PricingService:
         return days * (normal_hours * 60 * self.normal_minute +
                        reduced_hours * 60 * self.reduced_minute)
 
-    def _get_reduced_minutes(self):
+    def _get_reduced_minutes(self, call):
         """ 
         Since the value will always be 0, we can implement it when the reduced
         minutes gets a price other than 0

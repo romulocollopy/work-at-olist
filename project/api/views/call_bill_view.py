@@ -13,7 +13,7 @@ class CallBillView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
         use_case = self.get_use_case()
-        data = use_case.execute(serializer.data)
+        data = use_case.execute(**serializer.data)
         return Response(data)
 
     def get_use_case(self):

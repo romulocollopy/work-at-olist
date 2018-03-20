@@ -41,10 +41,19 @@ The project demo is avaliable at https://call-records.herokuapp.com
 
 ### Token
 The authentication token can be obtined with a `POST` request to https://call-records.herokuapp.com/api/token providing the `username=guest` and password `olist!guest`.
+eg:
+```bash
+$ curl -X POST -d "username=guest&password=olist\!guest" http://call-records.herokuapp.com/api/token/
+{"token": "<yourtoken>"}
+```
 
 ### Call Event
-The call events are registered with a `POST` request to https://call-records.herokuapp.com/api/call-event/, providig the header `Authentication: Token <yourtoken>` and the body as in the project specification:
+The call events are registered with a `POST` request to https://call-records.herokuapp.com/api/call-event/, providig the header `Authorization: Token <yourtoken>`  and the body as in the project specification:
+eg:
+```bash
+$ curl -X POST -H "Authorization: Token <yourtoken>" -d "" http://call-records.herokuapp.com/api/call-event/
 
+```
 1. Call Start Record
 
 ```
@@ -57,6 +66,10 @@ The call events are registered with a `POST` request to https://call-records.her
   "destination":  // The phone number receiving the call.
 }
 ```
+eg:
+```bash
+curl -X POST -H "Authorization: Token <yourtoken>" -d "id=2&type=start&timestamp=2018-03-20T16:10:57.012Z&call_id=233&source=21999888777&destination=21777666555" http://call-records.herokuapp.com/api/call-event/
+```
 
 2. Call End Record
 
@@ -67,6 +80,10 @@ The call events are registered with a `POST` request to https://call-records.her
    "timestamp":  // The timestamp of when the event occured;
    "call_id":  // Unique for each call record pair.
 }
+```
+eg:
+```bash
+curl -X POST -H "Authorization: Token <yourtoken>" -d "id=18&type=end&timestamp=2018-03-20T21:10:54.012Z&call_id=233" http://call-records.herokuapp.com/api/call-event/
 ```
 
 ### Get Billing

@@ -15,7 +15,7 @@ class CallEventView(APIView):
 
         use_case = self.get_use_case()
         use_case.execute(**serializer.data)
-        return Response('OK')
+        return Response({'message: created'}, status=201)
 
     def get_use_case(self):
         return self.use_case_class()

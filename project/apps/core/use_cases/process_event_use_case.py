@@ -11,6 +11,7 @@ class ProcessEventUseCase:
         self.factory = kwargs.get('events_factory') or EventFactory()
 
     def execute(self, **kwargs):
-        self.model.objects.create(**kwargs)
+        event_store_id = kwargs.pop('id') if 'id' in kwargs else None
+        self.model.objects.update_or_create(id=event_store_id, defaults=kwargs)
         event = self.factory.build(**kwargs)
         self.processor.process(event)

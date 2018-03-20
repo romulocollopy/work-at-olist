@@ -15,6 +15,9 @@ dateutils = "*"
 python-dateutil = "*"
 freezegun = "*"
 gunicorn = "*"
+whitenoise = "*"
+django-test-without-migrations = "*"
+"psycopg2" = "*"
 
 
 [dev-packages]

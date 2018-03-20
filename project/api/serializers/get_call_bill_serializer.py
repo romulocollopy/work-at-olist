@@ -8,7 +8,7 @@ class GetCallBillSerializer(serializers.Serializer):
     year = serializers.IntegerField(required=False)
 
     def validate(self, data):
-        month, year = self._get_period(data['month'], data['year'])
+        month, year = self._get_period(data.get('month'), data.get('year'))
         return dict(
             source=data['source'],
             month=month,

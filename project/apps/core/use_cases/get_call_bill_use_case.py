@@ -1,4 +1,5 @@
 from apps.core.models import Call as CallModel
+from api.serializers import BillingItemSerializer
 
 
 class GetCallBillUseCase:
@@ -7,17 +8,11 @@ class GetCallBillUseCase:
         self.model = kwargs.get('model') or CallModel
 
     def execute(self, source=None, month=None, year=None, **kwargs):
-        data = self.model.objects.month_bill(source, month=month, year=year)
-        calls = [dict(
-            destination=d.destination,
-            start_date=d.start_timestamp.date(),
-            start_time=d.start_timestamp.time(),
-            duration=d.duration,
-            price=d.price,
-        ) for d in data]
+        qs = self.model.objects.month_bill(source, month=month, year=year)
+        calls = BillingItemSerializer(qs, many=True)
         return dict(
             subscriber=source,
             period='{}/{}'.format(month, year),
-            total=sum([d['price'] for d in calls]),
-            calls=calls,
+            total=sum([c.price for c in qs]),
+            calls=calls.data,
         )

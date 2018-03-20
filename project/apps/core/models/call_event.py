@@ -7,3 +7,6 @@ class StoredCallEvent(models.Model):
     source = models.CharField(max_length=11)
     destination = models.CharField(max_length=11)
     type = models.CharField(max_length=10)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True)

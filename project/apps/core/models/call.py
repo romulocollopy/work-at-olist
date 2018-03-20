@@ -34,6 +34,9 @@ class Call(models.Model):
     duration = models.DurationField(null=True)
     price = models.DecimalField(max_digits=11, decimal_places=2, null=True)
 
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True)
+
     @classmethod
     def handle_start(cls, event):
         call, created = cls.objects.update_or_create(

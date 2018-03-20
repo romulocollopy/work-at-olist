@@ -31,16 +31,8 @@ $ pipenv run project/manage.py test [module] [-n]
 
 # Work Environment
 
-This project was develop between diaper leaks, feeding and baby baths in my Laptop running Arch Linux version 238 with Gnome Desktop; Zsh; Emacs (and some vim); Python 3.6 and pipenv.
+This project was develop between diaper leaks, feeding and baby baths in a neat Laptop running Arch Linux version 238 with Gnome Desktop; Zsh; Emacs (and some vim); Python 3.6 and pipenv.
 
-
-
-
-Write the project documentation containing:
-
-    Description;
-    Installing and testing instructions;
-    Brief description of the work environment used to run this project (Computer/operating system, text editor/IDE, libraries, etc).
 
 # API (sort of) documentation;
 
@@ -86,9 +78,9 @@ As in the other endpont, Authentication Token in required as header.
 
 During to time constraints some details became oversight and should be revied:
 - the call events can occour in any order and multiple times, since the api must support different scenarions, like be called by messager brokers tasks tha does not have order garantee. But the API should return 201 when the event is created and 200 when it's updated.
-- there's a event sourcing table that can be used to replay the use cases and re-create the Calls with improved business logic; but the actual replay action is not implemented;
-- The Billing use case should use a proper serializer instead of building the response with dictionary comprehensions direct in the use case;
-- the call duration isn't properly formatted as asked in documentation
+- there's an event sourcing table that can be used to replay the use cases and re-create the Calls with improved business logic; but the actual replay action is not implemented;
 - 404 handlers and welcome page could be implemented
+- since the bill shows the `duration` field instead of start and end time, this field was preferred instead of `end_timestamp`. Neverthless, the `end_timestamp` field proved itself relevant to enable the API to receive the events in the wrong order. Some refactoring could be made to eliminate the redundance between these fields. On the other hand, having a duration field slightly increases the performance, as in the query screnario it avoids some processing for calculating it, like recomended in CQS (Command-Query Separation)
+
 
 It was fun to develop =), I'll try to get back to these details when possible.

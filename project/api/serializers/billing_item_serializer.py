@@ -20,11 +20,15 @@ class BillingItemSerializer(serializers.Serializer):
         delta = dateutil.relativedelta.relativedelta(
             seconds=obj.duration.total_seconds()
         )
-        hours = delta.days * 24 + delta.hours
+        hours = int(delta.days * 24 + delta.hours)
         minutes = int(delta.minutes)
         seconds = int(delta.seconds)
         return f"{hours}h{minutes}m{seconds}s"
 
     def get_price(self, obj):
-        locale.setlocale(locale.LC_MONETARY, ('pt_BR', 'UTF-8'))
-        return locale.currency(obj.price)
+        try:
+            locale.setlocale(locale.LC_MONETARY, ('pt_BR', 'UTF-8'))
+        except Exception:
+            return "R$ {}".format(obj.price).replace('.', ',')
+        else:
+            return locale.currency(obj.price)

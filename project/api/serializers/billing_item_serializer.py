@@ -1,4 +1,5 @@
 import dateutil
+import locale
 from rest_framework import serializers
 
 
@@ -25,5 +26,5 @@ class BillingItemSerializer(serializers.Serializer):
         return f"{hours}h{minutes}m{seconds}s"
 
     def get_price(self, obj):
-        price = str(obj.price).replace('.', ',')
-        return "R$ {}".format(price)
+        locale.setlocale(locale.LC_MONETARY, ('pt_BR', 'UTF-8'))
+        return locale.currency(obj.price)

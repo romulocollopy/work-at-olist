@@ -12,7 +12,7 @@ class GetCallBillUseCase:
         calls = BillingItemSerializer(qs, many=True)
         return dict(
             subscriber=source,
-            period='{}/{}'.format(month, year),
+            period='{}-{:02d}'.format(year, month),
             total=sum([c.price for c in qs]),
             calls=calls.data,
         )

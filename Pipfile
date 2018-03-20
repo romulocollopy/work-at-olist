@@ -18,6 +18,7 @@ gunicorn = "*"
 whitenoise = "*"
 django-test-without-migrations = "*"
 "psycopg2" = "*"
+django-cors-headers = "*"
 
 
 [dev-packages]

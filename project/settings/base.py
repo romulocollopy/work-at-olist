@@ -22,6 +22,8 @@ BASE_DIR = Path(__file__).parents[1].resolve()
 # SECURITY WARNING: keep the secret key used in production secret!
 DEVELOP = decouple.config('DEVELOP', cast=bool, default=False)
 DEBUG = decouple.config('DEBUG', cast=bool, default=False)
+CORS_ORIGIN_ALLOW_ALL = decouple.config('CORS_ORIGIN_ALLOW_ALL',
+                                        cast=bool, default=False)
 
 if DEVELOP:
     SECRET_KEY = decouple.config(
@@ -51,6 +53,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'test_without_migrations',
+    'corsheaders',
 ]
 
 PROJECT_APPS = [
@@ -62,13 +65,14 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'urls'

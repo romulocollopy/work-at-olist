@@ -48,7 +48,7 @@ class CallEventViewTestCase(AuthUserTestMixin, APITestCase):
 
     def test_post_ok(self):
         resp = self.client.post(self.url)
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
     def test_post_calls_serializer(self):
         self.client.post(self.url, self.data)
